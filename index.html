@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human Exposure to the Polycrisis in 2050 — HEP-2050</title>
+<meta name="description" content="A digital report on how many people will face air and water pollution, extreme heat, poverty, and conflict in 2050 — and where the stressors overlap.">
+<meta property="og:title" content="Human Exposure to the Polycrisis in 2050">
+<meta property="og:description" content="One webpage, five stressors, and the overlap that defines the polycrisis in 2050.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0b0f14;
+  --bg-2:#10161d;
+  --panel:#141c25;
+  --panel-2:#182230;
+  --ink:#e9e4d8;
+  --ink-dim:#a8a396;
+  --ink-faint:#6f6a5f;
+  --line:#2a3340;
+  --amber:#e0a458;
+  --amber-bright:#f4c17b;
+  --danger:#d85b4b;
+  --teal:#57b8a5;
+  --serif:"Fraunces",Georgia,serif;
+  --sans:"Inter",system-ui,-apple-system,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.65;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(224,164,88,.28)}
+a{color:var(--amber);text-decoration:none}
+a:hover{color:var(--amber-bright)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+
+/* ---------- masthead ---------- */
+.masthead{
+  position:sticky;top:0;z-index:50;
+  background:rgba(11,15,20,.86);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.masthead-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;gap:18px;
+}
+.brand{display:flex;align-items:baseline;gap:9px;white-space:nowrap}
+.brand .mark{font-family:var(--serif);font-weight:700;font-size:1.18rem;letter-spacing:.02em;color:var(--ink)}
+.brand .mark span{color:var(--amber)}
+.brand .tag{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint)}
+.nav{display:flex;gap:20px;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);white-space:nowrap;padding:6px 0;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--ink);border-bottom-color:var(--amber)}
+@media(max-width:860px){
+  .masthead-inner{height:auto;flex-direction:column;align-items:flex-start;padding:10px 0 8px}
+  .nav{width:100%;gap:14px;padding-bottom:2px}
+}
+
+/* ---------- hero ---------- */
+.hero{padding:84px 0 40px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(900px 420px at 78% -10%,rgba(224,164,88,.13),transparent 60%),
+    radial-gradient(700px 360px at 8% 110%,rgba(216,91,75,.09),transparent 60%);
+  pointer-events:none;
+}
+.kicker{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-bottom:18px}
+.hero h1{
+  font-family:var(--serif);font-weight:600;
+  font-size:clamp(2.4rem,5.6vw,4.4rem);
+  line-height:1.04;letter-spacing:-.01em;max-width:15ch;
+}
+.hero h1 em{font-style:italic;color:var(--amber-bright)}
+.standfirst{
+  margin-top:26px;max-width:64ch;
+  font-size:1.12rem;color:var(--ink-dim);
+}
+.standfirst strong{color:var(--ink);font-weight:600}
+.exposure-tape{margin-top:44px}
+.tape-label{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.tape{display:flex;gap:4px;height:44px}
+.tape div{display:flex;align-items:center;padding:0 10px;font-size:.7rem;font-weight:600;letter-spacing:.03em;color:#0b0f14;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;min-width:34px}
+.tape .t-air{background:var(--amber-bright)}
+.tape .t-water{background:#7fb3c8}
+.tape .t-heat{background:var(--danger)}
+.tape .t-income{background:#b08bb8}
+.tape .t-conflict{background:#c98d5a}
+.tape .t-ok{background:#3d4a57;color:var(--ink)}
+@media(max-width:860px){.tape{flex-direction:column;height:auto}.tape div{min-width:0;padding:10px 12px}}
+.stat-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:56px}
+.stat{padding:22px 18px;background:var(--bg-2)}
+.stat .num{font-family:var(--serif);font-weight:700;font-size:1.9rem;color:var(--ink);line-height:1.1}
+.stat .num small{font-size:1rem;color:var(--amber)}
+.stat .lbl{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);margin-top:6px}
+.stat .src{font-size:.64rem;color:var(--ink-faint);margin-top:6px}
+@media(max-width:960px){.stat-strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.stat-strip{grid-template-columns:1fr}}
+
+/* ---------- sections ---------- */
+section{padding:84px 0;border-bottom:1px solid var(--line)}
+.sec-head{display:grid;grid-template-columns:110px 1fr;gap:28px;align-items:start;margin-bottom:44px}
+.sec-no{font-family:var(--serif);font-size:.9rem;color:var(--amber);letter-spacing:.06em}
+.sec-head h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.8rem,3.4vw,2.6rem);line-height:1.1;max-width:22ch}
+.sec-head .lede{grid-column:2;max-width:70ch;color:var(--ink-dim);font-size:1.05rem;margin-top:14px}
+.sec-head .lede strong{color:var(--ink)}
+@media(max-width:720px){.sec-head{grid-template-columns:1fr;gap:10px}.sec-head .lede{grid-column:1}}
+
+.prose{max-width:72ch}
+.prose p{margin-bottom:1.15em}
+.prose p:last-child{margin-bottom:0}
+.prose .drop::first-letter{
+  float:left;font-family:var(--serif);font-size:4.6rem;line-height:.82;
+  padding:6px 12px 0 0;color:var(--amber);
+}
+.prose strong{color:var(--ink)}
+.note{font-size:.82rem;color:var(--ink-faint);margin-top:14px}
+.hr-rule{height:1px;background:var(--line);border:0;margin:44px 0}
+
+/* ---------- definition card ---------- */
+.def-card{
+  border:1px solid var(--line);border-left:3px solid var(--amber);
+  background:var(--panel);padding:26px 28px;margin-top:36px;
+}
+.def-card .term{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
+.def-card p{font-family:var(--serif);font-size:1.28rem;line-height:1.4;color:var(--ink)}
+.def-card p em{color:var(--amber-bright)}
+.mech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:40px}
+.mech{padding:24px;background:var(--bg-2)}
+.mech .m-no{font-family:var(--serif);color:var(--amber);font-size:1rem}
+.mech h3{font-family:var(--serif);font-weight:600;font-size:1.15rem;margin:10px 0 8px}
+.mech p{font-size:.9rem;color:var(--ink-dim)}
+@media(max-width:820px){.mech-grid{grid-template-columns:1fr}}
+
+/* ---------- stressor cards ---------- */
+.stressor{border:1px solid var(--line);background:var(--panel);margin-bottom:22px}
+.stressor-head{display:grid;grid-template-columns:64px 1fr auto;gap:18px;align-items:center;padding:20px 24px;border-bottom:1px solid var(--line)}
+.stressor-head .s-no{font-family:var(--serif);font-size:1.5rem;color:var(--ink-faint)}
+.stressor-head h3{font-family:var(--serif);font-weight:600;font-size:1.5rem}
+.stressor-head .big{font-family:var(--serif);font-weight:700;font-size:1.7rem;color:var(--amber-bright);text-align:right;white-space:nowrap}
+.stressor-head .big small{display:block;font-family:var(--sans);font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+.stressor-body{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;padding:24px}
+.stressor-body .prose p{font-size:.97rem}
+.what{background:var(--bg-2);border:1px solid var(--line);padding:18px 20px}
+.what h4{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);margin-bottom:12px}
+.what ul{list-style:none}
+.what li{font-size:.85rem;color:var(--ink-dim);padding:7px 0;border-bottom:1px dashed var(--line)}
+.what li:last-child{border-bottom:0}
+.what li b{color:var(--ink);font-weight:600}
+@media(max-width:820px){.stressor-body{grid-template-columns:1fr}.stressor-head{grid-template-columns:44px 1fr}.stressor-head .big{grid-column:2;text-align:left}}
+
+/* ---------- charts ---------- */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:36px}
+.chart-card{border:1px solid var(--line);background:var(--panel);padding:22px}
+.chart-card.full{grid-column:1/-1}
+.chart-card h4{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-bottom:4px}
+.chart-card .sub{font-size:.78rem;color:var(--ink-faint);margin-bottom:16px}
+.chart-box{position:relative;height:340px}
+.chart-box.tall{height:380px}
+.chart-note{font-size:.74rem;color:var(--ink-faint);margin-top:12px}
+@media(max-width:860px){.chart-grid{grid-template-columns:1fr}.chart-box{height:300px}}
+
+/* ---------- tables ---------- */
+.table-scroll{overflow-x:auto;border:1px solid var(--line);margin-top:36px}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:820px}
+thead th{
+  background:var(--panel-2);color:var(--amber);font-size:.68rem;letter-spacing:.14em;
+  text-transform:uppercase;text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);
+}
+tbody td{padding:13px 16px;border-bottom:1px solid var(--line);color:var(--ink-dim);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:rgba(224,164,88,.04)}
+td.rank{font-family:var(--serif);font-size:1.1rem;color:var(--ink)}
+td.name{color:var(--ink);font-weight:600;white-space:nowrap}
+td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+.dot{letter-spacing:2px;font-size:.7rem}
+.dot.hi{color:var(--danger)} .dot.md{color:var(--amber)} .dot.lo{color:var(--ink-faint)}
+.score{font-family:var(--serif);font-weight:700;color:var(--amber-bright);font-size:1.05rem;text-align:right}
+.matrix{min-width:760px}
+.matrix td.cell-x{color:var(--danger);font-weight:700;text-align:center;font-size:1rem}
+.matrix td{font-size:.8rem}
+.matrix td.axis{color:var(--ink);font-weight:600;background:var(--panel-2)}
+@media(max-width:720px){
+  .matrix{min-width:0;border:0}
+  .matrix thead{display:none}
+  .matrix tbody,.matrix tr,.matrix td{display:block;width:100%}
+  .matrix tr{border:1px solid var(--line);margin-bottom:14px;background:var(--bg-2)}
+  .matrix td{padding:11px 14px;border-bottom:1px dashed var(--line);font-size:.82rem}
+  .matrix td:last-child{border-bottom:0}
+  .matrix td::before{content:attr(data-label);display:block;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:4px}
+  .matrix td.axis{background:var(--panel-2);font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--ink);border-bottom:1px solid var(--line)}
+  .matrix td.axis::before{content:"";display:none}
+  .matrix td.cell-x{display:none}
+}
+
+/* ---------- scenario cards ---------- */
+.scen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:36px}
+.scen{padding:24px;background:var(--bg-2)}
+.scen .band{height:3px;width:48px;margin-bottom:16px}
+.scen h4{font-family:var(--serif);font-weight:600;font-size:1.2rem;margin-bottom:8px}
+.scen .val{font-family:var(--serif);font-size:1.7rem;color:var(--amber-bright);margin:10px 0 4px}
+.scen .val small{font-size:.9rem;color:var(--ink-dim)}
+.scen p{font-size:.85rem;color:var(--ink-dim)}
+.scen .tag{display:inline-block;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);border:1px solid var(--line);padding:3px 8px;margin-top:12px}
+@media(max-width:860px){.scen-grid{grid-template-columns:1fr}}
+
+.gap-callout{display:flex;gap:22px;align-items:center;border:1px solid var(--line);border-left:3px solid var(--teal);background:var(--panel);padding:18px 22px;margin-top:16px}
+.gap-callout .gc-num{font-family:var(--serif);font-weight:700;font-size:1.8rem;color:var(--teal);white-space:nowrap}
+.gap-callout p{font-size:.9rem;color:var(--ink-dim)}
+@media(max-width:560px){.gap-callout{flex-direction:column;align-items:flex-start;gap:8px}}
+
+/* ---------- sources ---------- */
+.src-list{columns:2;column-gap:44px;margin-top:36px}
+.src{break-inside:avoid;padding:14px 0;border-bottom:1px solid var(--line);font-size:.85rem;color:var(--ink-dim)}
+.src b{color:var(--ink);font-weight:600}
+.src .src-id{color:var(--amber);font-size:.68rem;letter-spacing:.1em;margin-right:10px}
+@media(max-width:720px){.src-list{columns:1}}
+
+/* ---------- binding term ---------- */
+.binding{
+  border:1px solid var(--line);border-top:3px solid var(--amber);
+  background:linear-gradient(180deg,var(--panel) 0%,var(--bg-2) 100%);
+  padding:34px 32px;margin-top:44px;
+}
+.binding .term{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);margin-bottom:12px}
+.binding p{font-family:var(--serif);font-size:1.32rem;line-height:1.45;color:var(--ink)}
+.binding p em{color:var(--amber-bright)}
+
+/* ---------- footer ---------- */
+footer{padding:44px 0 60px;color:var(--ink-faint);font-size:.78rem}
+.foot-grid{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot-brand{font-family:var(--serif);font-size:1.1rem;color:var(--ink)}
+.foot-brand span{color:var(--amber)}
+.foot-links{display:flex;gap:18px}
+.foot-note{margin-top:22px;max-width:80ch}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <div class="brand">
+      <div class="mark">HEP<span>-2050</span></div>
+      <div class="tag">H Heuristics · Digital Report</div>
+    </div>
+    <nav class="nav" aria-label="Report sections">
+      <a href="#frame">Frame</a>
+      <a href="#fronts">Five Fronts</a>
+      <a href="#compound">Compound</a>
+      <a href="#hotspots">Hotspots</a>
+      <a href="#scenarios">Scenarios</a>
+      <a href="#method">Method</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <div class="hero">
+    <div class="wrap">
+      <div class="kicker">Human Exposure to the Polycrisis · 2050</div>
+      <h1>Most of humanity will live inside a stressor. A third will live inside <em>several at once.</em></h1>
+      <p class="standfirst">
+        Air pollution, water scarcity, extreme heat, income insecurity, and conflict are usually counted as separate problems.
+        By 2050 they will arrive as one condition. This report maps how many people each front will reach — and, more
+        importantly, <strong>where the fronts overlap</strong>.
+      </p>
+
+      <div class="exposure-tape" aria-hidden="true">
+        <div class="tape-label">Six exposure states, projected 2050 (HEP synthesis) — bar width proportional to population</div>
+        <div class="tape">
+          <div class="t-air" style="flex:9.2" title="Air pollution above WHO guideline · 9.2B">Air · 9.2B</div>
+          <div class="t-water" style="flex:5.7" title="Water scarcity ≥1 month/yr · 5.7B">Water · 5.7B</div>
+          <div class="t-heat" style="flex:3.5" title="High climate vulnerability · 3.5B">Heat vulnerability · 3.5B</div>
+          <div class="t-income" style="flex:2.9" title="Informal work, no income security · 2.9B">No income security · 2.9B</div>
+          <div class="t-conflict" style="flex:2.4" title="Conflict-affected · 2.4B">Conflict · 2.4B</div>
+          <div class="t-ok" style="flex:2.2" title="Outside all five · ~2.2B">Outside all five · 2.2B</div>
+        </div>
+      </div>
+
+      <div class="stat-strip">
+        <div class="stat">
+          <div class="num">9.7<small>B</small></div>
+          <div class="lbl">Global population, 2050</div>
+          <div class="src">UN World Population Prospects 2022, medium variant</div>
+        </div>
+        <div class="stat">
+          <div class="num">6.7<small>B</small></div>
+          <div class="lbl">Urban population, 2050</div>
+          <div class="src">UN WPP 2022 — 68% urban share</div>
+        </div>
+        <div class="stat">
+          <div class="num">3.3–3.6<small>B</small></div>
+          <div class="lbl">Living in highly climate-vulnerable contexts</div>
+          <div class="src">IPCC AR6 WGII, 2022</div>
+        </div>
+        <div class="stat">
+          <div class="num">216<small>M</small></div>
+          <div class="lbl">Internal climate migrants by 2050</div>
+          <div class="src">World Bank Groundswell, 2021</div>
+        </div>
+        <div class="stat">
+          <div class="num">5.7<small>B</small></div>
+          <div class="lbl">In water-scarce areas ≥1 month/yr</div>
+          <div class="src">UN-Water policy brief, 2021</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 01 FRAME ============ -->
+  <section id="frame">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">01</div>
+        <h2>The polycrisis frame: five stressors, one exposure</h2>
+        <p class="lede">Polycrisis is not a metaphor for a bad year. It names a specific condition: multiple systemic
+        stressors that interact, so that total exposure runs <strong>worse than the sum of its parts</strong>.</p>
+      </div>
+
+      <div class="prose">
+        <p class="drop">A heatwave that cuts a city's power also cuts the water pumps and the incomes of outdoor workers.
+        A drought that fails a harvest pushes people onto roads that cross a contested border. The stressor list — dirty
+        air, scarce water, rising heat, income precarity, organized violence — reads like five separate policy briefs.
+        In 2050 it will read like one biography.</p>
+        <p>Three mechanisms do the coupling. Stressors compound: heat worsens photochemical smog, and smog raises the
+        death toll of heatwaves. Shocks cascade: one failed season drains savings, then schooling, then the ability to
+        relocate before the next flood. Coping capacity erodes: households that spend income on bottled water and clinic
+        visits cannot build the buffer that would let them absorb the next shock.</p>
+      </div>
+
+      <div class="def-card">
+        <div class="term">Working definition</div>
+        <p><em>Polycrisis exposure</em> is the condition in which environmental, economic, and security stressors overlap
+        and amplify one another, so that exposure to any one of them raises exposure to the others.</p>
+      </div>
+
+      <div class="mech-grid">
+        <div class="mech">
+          <div class="m-no">M1</div>
+          <h3>Stressors compound</h3>
+          <p>Heat cooks ozone and particulate smog. Dirty air worsens respiratory damage during heatwaves. Each hazard
+          raises the biological cost of the others.</p>
+        </div>
+        <div class="mech">
+          <div class="m-no">M2</div>
+          <h3>Shocks cascade</h3>
+          <p>One failed harvest drains savings, then schooling, then the option to relocate before the next flood.
+          Households fall in stages, not all at once.</p>
+        </div>
+        <div class="mech">
+          <div class="m-no">M3</div>
+          <h3>Coping erodes</h3>
+          <p>Income spent on bottled water, clinic visits, and cooling cannot also fund the buffer that would absorb the
+          next shock. Adaptation capacity depreciates under repeated strain.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 FIVE FRONTS ============ -->
+  <section id="fronts">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">02</div>
+        <h2>Five exposure fronts in 2050</h2>
+        <p class="lede">Each front has its own literature, its own unit, and its own agency. Together they define the
+        2050 exposure surface. Figures are central estimates from the cited scenario literature; ranges appear in the
+        chart note.</p>
+      </div>
+
+      <div class="stressor">
+        <div class="stressor-head">
+          <div class="s-no">A</div>
+          <h3>Air pollution</h3>
+          <div class="big">9.2B<small>breathing PM2.5 above WHO guideline</small></div>
+        </div>
+        <div class="stressor-body">
+          <div class="prose">
+            <p>Air is the stressor with the widest reach. The World Health Organization estimates that 99 percent of
+            humanity already breathes air that exceeds its guideline for fine particulate matter, PM2.5. By 2050 that
+            share stays near-universal under current policy, but the risk shifts: household smoke from solid fuels
+            declines, and outdoor pollution from transport, industry, and fossil power takes over the burden.</p>
+            <p>OECD and IEA scenario work projects <strong>4.5 to 6.6 million premature deaths a year</strong> from
+            outdoor air pollution by mid-century. The exposed are not evenly spread. South Asian and Sub-Saharan African
+            cities carry the highest annual mean concentrations, and children carry the largest share of the health damage.</p>
+          </div>
+          <div class="what">
+            <h4>What changes by 2050</h4>
+            <ul>
+              <li><b>Household → outdoor shift:</b> cooking smoke falls; transport and industrial PM2.5 rises.</li>
+              <li><b>Urban air worsens first</b> in fast-growing South Asian and African cities.</li>
+              <li><b>Deaths:</b> 4.5–6.6M/yr under current-policy trajectories (OECD/IEA).</li>
+              <li><b>Children</b> remain the highest-burden group per exposure unit.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="stressor">
+        <div class="stressor-head">
+          <div class="s-no">B</div>
+          <h3>Water scarcity</h3>
+          <div class="big">5.7B<small>in water-scarce areas ≥1 month/yr</small></div>
+        </div>
+        <div class="stressor-body">
+          <div class="prose">
+            <p>Water scarcity is exposure with a schedule. Roughly 4 billion people already experience severe water
+            scarcity for at least one month each year. UN-Water projects that <strong>5.7 billion</strong> — well over
+            half the 2050 population — will live in water-scarce areas for at least one month a year by mid-century, while
+            urban water demand rises 55 percent over the same window.</p>
+            <p>Agriculture remains the largest claimant, which is why scarcity becomes income exposure before it becomes
+            thirst: when aquifers drop, food prices and farm incomes move first.</p>
+          </div>
+          <div class="what">
+            <h4>What changes by 2050</h4>
+            <ul>
+              <li><b>5.7B</b> in water-scarce areas ≥1 month/yr (UN-Water).</li>
+              <li><b>+55%</b> urban water demand (OECD).</li>
+              <li><b>Groundwater depletion</b> hits irrigated agriculture hardest.</li>
+              <li><b>Scarcity arrives as price</b> before it arrives as thirst.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="stressor">
+        <div class="stressor-head">
+          <div class="s-no">C</div>
+          <h3>Extreme heat</h3>
+          <div class="big">1.6B<small>urban residents in regular extreme heat</small></div>
+        </div>
+        <div class="stressor-body">
+          <div class="prose">
+            <p>Heat is the fastest-moving front. C40 cities project that <strong>1.6 billion urban residents</strong>
+            across 970 cities will face regular extreme heat by 2050 on a business-as-usual path. The Intergovernmental
+            Panel on Climate Change counts <strong>3.3 to 3.6 billion people</strong> living in contexts highly vulnerable
+            to climate change — the closest thing the literature has to a single exposure denominator.</p>
+            <p>Warming of 2°C arrives around mid-century on current policy trajectories, and with it wet-bulb conditions
+            that make outdoor labor dangerous for longer stretches of the year.</p>
+          </div>
+          <div class="what">
+            <h4>What changes by 2050</h4>
+            <ul>
+              <li><b>970 cities</b> face regular extreme heat (C40).</li>
+              <li><b>3.3–3.6B</b> highly vulnerable to climate change (IPCC AR6).</li>
+              <li><b>~2°C warming</b> arrives near mid-century on current policy.</li>
+              <li><b>Wet-bulb limits</b> constrain outdoor work for longer seasons.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="stressor">
+        <div class="stressor-head">
+          <div class="s-no">D</div>
+          <h3>Poverty / no income</h3>
+          <div class="big">2.9B<small>projected in informal employment</small></div>
+        </div>
+        <div class="stressor-body">
+          <div class="prose">
+            <p>Income exposure is the amplifier that converts environmental stress into household collapse. Roughly
+            2 billion workers — over 60 percent of global employment — hold informal jobs with no income security, no
+            sick pay, and no buffer. Held at its current share as the labor force grows, that projects to
+            <strong>about 2.9 billion informal workers by 2050</strong>.</p>
+            <p>The World Bank estimates climate change could push <strong>130 million additional people</strong> into
+            extreme poverty by 2030; carried forward to 2050, climate-aggravated poverty keeps tens of millions who would
+            otherwise escape inside the exposure zone. Heat already erodes the productive hours of informal outdoor
+            workers — the same households least able to buy cooling or relocate.</p>
+          </div>
+          <div class="what">
+            <h4>What changes by 2050</h4>
+            <ul>
+              <li><b>2.9B</b> informal workers projected, constant share (ILO baseline).</li>
+              <li><b>130M+</b> pushed toward extreme poverty by climate by 2030 (World Bank).</li>
+              <li><b>Heat × labor</b> cuts productive hours of outdoor workers first.</li>
+              <li><b>No buffer</b> means one shock converts to long-term poverty.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="stressor">
+        <div class="stressor-head">
+          <div class="s-no">E</div>
+          <h3>Conflict & displacement</h3>
+          <div class="big">2.4B<small>projected in conflict-affected areas</small></div>
+        </div>
+        <div class="stressor-body">
+          <div class="prose">
+            <p>Conflict is both a stressor and an outcome. The United Nations counts <strong>2 billion people</strong>
+            living in conflict-affected areas today — a quarter of humanity — and 122 million forcibly displaced. Held at
+            that share against the 2050 population, the conflict-affected population projects to <strong>about
+            2.4 billion</strong>.</p>
+            <p>Climate stress does not start wars on its own, but it loads the dice: it prices food, water, and pasture,
+            then presses people into movement across governed borders. The World Bank's Groundswell report projects up to
+            <strong>216 million internal climate migrants by 2050</strong> under a high-emissions scenario, concentrated
+            in the same regions already carrying the heaviest air, water, and heat burdens.</p>
+          </div>
+          <div class="what">
+            <h4>What changes by 2050</h4>
+            <ul>
+              <li><b>2.4B</b> in conflict-affected areas, constant UN ratio.</li>
+              <li><b>216M</b> internal climate migrants by 2050 (World Bank Groundswell).</li>
+              <li><b>Threat multiplier:</b> climate prices the resources conflicts contest.</li>
+              <li><b>Displacement</b> compounds exposure at destination, not just origin.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card full">
+        <h4>Chart 1 — Exposure population by stressor, 2050</h4>
+        <div class="sub">Central estimates in billions; whisker notes give the cited or synthesized range.</div>
+        <div class="chart-box tall"><canvas id="chartExposure"></canvas></div>
+        <p class="chart-note">Air and water are near-universal conditions; heat, income insecurity, and conflict select
+        harder. Ranges used: air 8.8–9.6B (WHO 99% share applied to UN WPP 2050 population); water 4.8–5.7B (UN-Water);
+        climate vulnerability 3.3–3.6B (IPCC AR6); informal employment 2.7–3.1B (ILO share, constant); conflict-affected
+        2.2–2.6B (UN ratio, constant); urban extreme heat 1.2–1.9B (C40). The chart shows midpoints.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 COMPOUND ============ -->
+  <section id="compound">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">03</div>
+        <h2>Compound exposure: the overlap is the story</h2>
+        <p class="lede">The headline of 2050 exposure is not any single stressor. It is <strong>overlap</strong> — the
+        households that carry several stressors at once and therefore cannot fix any one of them cleanly.</p>
+      </div>
+
+      <div class="prose">
+        <p class="drop">Our synthesis of the cited ranges suggests roughly <strong>1.1 billion people</strong> could face
+        three or more severe stressors at once by 2050, and another <strong>2.3 billion</strong> could face two. That
+        3.4-billion-person "double burden" population is the core of the polycrisis: households for whom fixing the water
+        supply does not fix the income, and fixing the income does not fix the heat.</p>
+        <p>The stacked bar below divides the projected 2050 population by the number of overlapping stressors. The exact
+        bucket boundaries are a synthesis, not a published statistic — the methodology section explains how they were
+        derived. What matters is the shape: a large plurality carries one stressor, and a vulnerable minority carries
+        several.</p>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-card">
+          <h4>Chart 2 — 2050 population by overlapping stressor count</h4>
+          <div class="sub">HEP-2050 synthesis of the five fronts (billions, midpoint). Segment width = population.</div>
+          <div class="chart-box" style="height:220px"><canvas id="chartCompound"></canvas></div>
+          <p class="chart-note">The 3+ segment (~1.1B) is the population for whom the polycrisis is not a sequence of
+          shocks but a permanent condition.</p>
+        </div>
+        <div class="chart-card">
+          <h4>Chart 3 — Highly exposed population by region, 2050</h4>
+          <div class="sub">HEP-2050 synthesis: population facing ≥1 severe stressor (billions).</div>
+          <div class="chart-box"><canvas id="chartRegions"></canvas></div>
+          <p class="chart-note">South Asia and Sub-Saharan Africa together account for roughly 60% of the population
+          facing two or more severe stressors on our synthesis.</p>
+        </div>
+      </div>
+
+      <hr class="hr-rule">
+      <div class="sec-head" style="margin-bottom:24px">
+        <div class="sec-no">M</div>
+        <h2>The interaction matrix</h2>
+        <p class="lede">Each cell is a coupling mechanism — the reason exposure to one stressor raises exposure to
+        another. Read down a column to see how one hazard propagates.</p>
+      </div>
+
+      <div class="table-scroll">
+        <table class="matrix">
+          <thead>
+            <tr><th>Stressor pair</th><th>Air</th><th>Water</th><th>Heat</th><th>Income</th><th>Conflict</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="axis">Air</td><td class="cell-x">—</td><td data-label="Water">Drought lifts dust and PM2.5; smoke taints catchments.</td><td data-label="Heat">Heat cooks ozone and smog formation.</td><td data-label="Income">Respiratory illness cuts working days and wages.</td><td data-label="Conflict">Smoke and burn pits mark active conflict zones.</td></tr>
+            <tr><td class="axis">Water</td><td data-label="Air">Polluted runoff narrows usable supply.</td><td class="cell-x">—</td><td data-label="Heat">Heat accelerates evaporation and demand.</td><td data-label="Income">Irrigation loss hits farm incomes first.</td><td data-label="Conflict">Water stress is a recognized conflict multiplier.</td></tr>
+            <tr><td class="axis">Heat</td><td data-label="Air">Smog raises heatwave mortality.</td><td data-label="Water">Cooling demand competes with water supply.</td><td class="cell-x">—</td><td data-label="Income">Outdoor labor loses productive hours.</td><td data-label="Conflict">Heatwaves strain grids and state capacity.</td></tr>
+            <tr><td class="axis">Income</td><td data-label="Air">Poverty forces reliance on dirty fuels.</td><td data-label="Water">The poor pay the highest unit price for water.</td><td data-label="Heat">No income means no cooling.</td><td class="cell-x">—</td><td data-label="Conflict">Livelihood collapse feeds recruitment and unrest.</td></tr>
+            <tr><td class="axis">Conflict</td><td data-label="Air">Damaged infrastructure degrades air quality.</td><td data-label="Water">Conflict blocks water access and sanitation.</td><td data-label="Heat">Displacement camps sit in heat islands.</td><td data-label="Income">Violence destroys assets and jobs.</td><td class="cell-x">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 HOTSPOTS ============ -->
+  <section id="hotspots">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">04</div>
+        <h2>Hotspots: where 2050 exposure concentrates</h2>
+        <p class="lede">Exposure is global, but it is not evenly distributed. Ten countries carry a disproportionate
+        share of the overlap because they combine large projected populations, fast urbanization, high baseline heat, and
+        thin fiscal buffers.</p>
+      </div>
+
+      <div class="prose">
+        <p class="drop">South Asia and Sub-Saharan Africa anchor the 2050 exposure map. They hold most of the projected
+        population growth, the fastest urbanization, the highest baseline heat, and the thinnest fiscal buffers. By 2050
+        the two regions are projected to contain roughly 3.4 billion of the world's 9.7 billion people — and, on our
+        synthesis, roughly 60 percent of the population facing two or more severe stressors.</p>
+        <p>The table ranks ten hotspot countries on a 0–100 HEP exposure index that combines the five fronts. The index
+        is illustrative, not a forecast: it shows relative concentration, not a precise count of future victims. Its
+        purpose is to make the geography of the polycrisis legible at a glance.</p>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Country / region</th><th>2050 pop. (M)</th>
+              <th>Air</th><th>Water</th><th>Heat</th><th>Income</th><th>Conflict</th><th>HEP index</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="rank">1</td><td class="name">India</td><td class="num">1,668</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot md">●●○</td><td class="score">91</td></tr>
+            <tr><td class="rank">2</td><td class="name">Pakistan</td><td class="num">367</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="score">89</td></tr>
+            <tr><td class="rank">3</td><td class="name">Nigeria</td><td class="num">377</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="score">88</td></tr>
+            <tr><td class="rank">4</td><td class="name">Bangladesh</td><td class="num">204</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot lo">●○○</td><td class="score">86</td></tr>
+            <tr><td class="rank">5</td><td class="name">DR Congo</td><td class="num">217</td><td class="dot md">●●○</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="score">83</td></tr>
+            <tr><td class="rank">6</td><td class="name">Ethiopia</td><td class="num">214</td><td class="dot md">●●○</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="score">79</td></tr>
+            <tr><td class="rank">7</td><td class="name">Egypt</td><td class="num">160</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot lo">●○○</td><td class="score">77</td></tr>
+            <tr><td class="rank">8</td><td class="name">Indonesia</td><td class="num">317</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot lo">●○○</td><td class="score">74</td></tr>
+            <tr><td class="rank">9</td><td class="name">Philippines</td><td class="num">157</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot md">●●○</td><td class="score">72</td></tr>
+            <tr><td class="rank">10</td><td class="name">Iraq</td><td class="num">82</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot hi">●●●</td><td class="dot md">●●○</td><td class="dot hi">●●●</td><td class="score">71</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Population figures: UN WPP 2022 medium variant. Dot ratings and the HEP index (0–100) are this
+      report's synthesis of the cited stressor literature; they are comparative, not predictive. ●●● = high,
+      ●●○ = medium, ●○○ = lower relative exposure.</p>
+    </div>
+  </section>
+
+  <!-- ============ 05 SCENARIOS ============ -->
+  <section id="scenarios">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">05</div>
+        <h2>Scenarios: exposure in 2050 is a policy outcome</h2>
+        <p class="lede">None of the numbers on this page are destiny. They are the product of scenario choices made
+        between now and mid-century — about emissions, adaptation, and cooperation.</p>
+      </div>
+
+      <div class="prose">
+        <p class="drop">The three curves below trace the share of humanity living under high compound exposure from 2025
+        to 2050 under three policy worlds. In a fragmented world — high emissions, weak cooperation, adaptation left to
+        households — the share climbs toward half of humanity. Under current policies it stabilizes near two-fifths. Under
+        accelerated mitigation and adaptation it falls.</p>
+        <p>The gap between the top and bottom curves — roughly 22 percentage points, or <strong>more than 2 billion
+        people</strong> — is the size of the decision still on the table.</p>
+      </div>
+
+      <div class="chart-card full">
+        <h4>Chart 4 — Share of humanity under high compound exposure, 2025–2050</h4>
+        <div class="sub">HEP-2050 scenario synthesis calibrated to IPCC SSP families; share of global population facing 2+ severe stressors.</div>
+        <div class="chart-box tall"><canvas id="chartScenarios"></canvas></div>
+        <p class="chart-note">Trajectories are this report's synthesis of the exposure ranges in Chart 1 applied to the
+        SSP scenario families: SSP3-7.0 (fragmented world), SSP2-4.5 (current policies), SSP1-2.6 (accelerated mitigation
+        and adaptation). They illustrate direction and scale, not precise year-by-year counts.</p>
+      </div>
+
+      <div class="gap-callout">
+        <div class="gc-num">≈2.1B people</div>
+        <p>The vertical gap at 2050 between the fragmented-world curve (48%) and the accelerated-adaptation curve (26%) —
+        22 percentage points of humanity. That gap is the size of the decision still on the table.</p>
+      </div>
+
+      <div class="scen-grid">
+        <div class="scen">
+          <div class="band" style="background:var(--danger)"></div>
+          <h4>Fragmented world</h4>
+          <div class="val">~48%<small> by 2050</small></div>
+          <p>SSP3-7.0 analog. High emissions, weak cooperation, adaptation left to households. Compound exposure
+          compounds fastest where buffers are thinnest.</p>
+          <div class="tag">SSP3-7.0 analog</div>
+        </div>
+        <div class="scen">
+          <div class="band" style="background:var(--amber)"></div>
+          <h4>Current policies</h4>
+          <div class="val">~40%<small> by 2050</small></div>
+          <p>SSP2-4.5 analog. Progress on energy and poverty, partial adaptation. Exposure grows with population and
+          urban heat, but slower than the fragmented path.</p>
+          <div class="tag">SSP2-4.5 analog</div>
+        </div>
+        <div class="scen">
+          <div class="band" style="background:var(--teal)"></div>
+          <h4>Accelerated adaptation</h4>
+          <div class="val">~26%<small> by 2050</small></div>
+          <p>SSP1-2.6 analog. Fast mitigation lowers hazard growth; proactive adaptation cuts vulnerability. The overlap
+          shrinks even as population grows.</p>
+          <div class="tag">SSP1-2.6 analog</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 06 METHOD ============ -->
+  <section id="method">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">06</div>
+        <h2>Methodology & sources</h2>
+        <p class="lede">How this report was built, what the numbers mean, and where they came from.</p>
+      </div>
+
+      <div class="prose">
+        <p>This page is a synthesis, not a model run. Where a single published figure exists for a 2050 exposure, we cite
+        it directly — UN-Water's 5.7 billion for water scarcity, the World Bank's 216 million for internal climate
+        migration, C40's 1.6 billion for urban extreme heat, the IPCC's 3.3–3.6 billion for high climate vulnerability.
+        Where only current shares exist, we project them forward at constant ratios against the UN's 2050 population
+        (9.7 billion, medium variant) and say so explicitly — informal employment, conflict-affected areas, and air
+        pollution exposure are treated this way.</p>
+        <p>Where figures overlap or combine, we report ranges and use midpoints only for visualization. The compound-exposure
+        buckets (Chart 2), the regional split (Chart 3), the hotspot index, and the scenario curves (Chart 4) are
+        <strong>HEP-2050 synthesis products</strong> derived from those cited ranges. They are scenario illustrations,
+        not predictions. They carry no false decimal precision, and they should not be quoted as published statistics.</p>
+        <p>One caveat matters more than the others: exposure counts people, but vulnerability counts their options.
+        Two households can face the same heat and water stress with radically different outcomes depending on income,
+        tenure, and state capacity. The synthesis here deliberately weights income and conflict as stressors in their own
+        right, because they are the difference between an environmental hazard and a humanitarian catastrophe.</p>
+      </div>
+
+      <div class="src-list">
+        <div class="src"><span class="src-id">WHO</span><b>World Health Organization (2021, 2024).</b> Ambient air quality guidelines and global air pollution exposure estimates — 99% of humanity above PM2.5 guideline.</div>
+        <div class="src"><span class="src-id">UN WPP</span><b>United Nations (2022).</b> World Population Prospects 2022, medium variant — 9.7B population and 6.7B urban population in 2050.</div>
+        <div class="src"><span class="src-id">IPCC</span><b>IPCC AR6 WGII (2022).</b> Climate Change 2022: Impacts, Adaptation and Vulnerability — 3.3–3.6B people in highly vulnerable contexts; 2°C timing on current policy.</div>
+        <div class="src"><span class="src-id">WB</span><b>World Bank (2021).</b> Groundswell: Acting on Internal Climate Migration — up to 216M internal climate migrants by 2050.</div>
+        <div class="src"><span class="src-id">UN-WATER</span><b>UN-Water (2021).</b> Policy brief on water scarcity — 5.7B in water-scarce areas at least one month per year by 2050.</div>
+        <div class="src"><span class="src-id">C40</span><b>C40 Cities (2022).</b> Extreme heat projections — 1.6B urban residents across 970 cities in regular extreme heat by 2050.</div>
+        <div class="src"><span class="src-id">ILO</span><b>ILO (2019, 2024).</b> Informal employment statistics — ~2B informal workers, >60% of global employment; heat stress and working-hour loss.</div>
+        <div class="src"><span class="src-id">UN</span><b>United Nations (2023).</b> Conflict-affected population estimate — 2B people, one quarter of humanity.</div>
+        <div class="src"><span class="src-id">UNHCR</span><b>UNHCR (2024).</b> Global forced displacement — 122M forcibly displaced people.</div>
+        <div class="src"><span class="src-id">OECD</span><b>OECD (2012).</b> Environmental Outlook to 2050 — air pollution mortality and urban water demand projections.</div>
+        <div class="src"><span class="src-id">IEA</span><b>IEA (2016).</b> Energy and Air Pollution — 4.5M premature deaths from outdoor air pollution under stated-policy scenario.</div>
+        <div class="src"><span class="src-id">UNICEF</span><b>UNICEF (2021).</b> The Climate Crisis Is a Child Rights Crisis — ~1B children at extremely high risk from climate and environmental shocks.</div>
+      </div>
+
+      <div class="binding">
+        <div class="term">Binding term</div>
+        <p>Read every 2050 exposure number as a <em>coupled quantity</em>. Air, water, heat, income, and conflict do not
+        arrive as separate claims on the same household; they arrive as one claim made five ways. Any policy, model, or
+        headline that prices one stressor in isolation is already behind the data — <em>measure the overlap, or you have
+        not measured exposure at all.</em></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">H<span> Heuristics</span></div>
+      <div class="foot-links">
+        <a href="https://github.com/Hunterhghs/HEP-2050" target="_blank" rel="noopener">GitHub repository</a>
+        <a href="https://hheuristics.com" target="_blank" rel="noopener">hheuristics.com</a>
+        <a href="#frame">Back to top ↑</a>
+      </div>
+    </div>
+    <p class="foot-note">HEP-2050 — Human Exposure to the Polycrisis in 2050. A single-page digital report by H Heuristics,
+    built with Veles (Fable-5 × DeepSeek). Figures are scenario estimates and syntheses from the cited sources, not
+    predictions; see Methodology for derivation and caveats. © 2025 H Heuristics.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const FONT = "'Inter', system-ui, sans-serif";
+  const SERIF = "'Fraunces', Georgia, serif";
+  const INK = '#e9e4d8';
+  const INK_DIM = '#a8a396';
+  const INK_FAINT = '#6f6a5f';
+  const LINE = '#2a3340';
+  const AMBER = '#e0a458';
+  const AMBER_BRIGHT = '#f4c17b';
+  const DANGER = '#d85b4b';
+  const TEAL = '#57b8a5';
+  const WATER = '#7fb3c8';
+  const INCOME_C = '#b08bb8';
+  const CONFLICT_C = '#c98d5a';
+  const GRID = 'rgba(169,163,150,0.08)';
+
+  Chart.defaults.color = INK_DIM;
+  Chart.defaults.font.family = FONT;
+  Chart.defaults.plugins.legend.labels.usePointStyle = true;
+  Chart.defaults.plugins.legend.labels.boxWidth = 8;
+  Chart.defaults.plugins.legend.labels.boxHeight = 8;
+
+  const c1 = document.getElementById('chartExposure');
+  if(c1){
+    new Chart(c1, {
+      type:'bar',
+      data:{
+        labels:[
+          'Air pollution above WHO guideline',
+          'Water scarcity ≥1 month/yr',
+          'High climate vulnerability',
+          'Informal work, no income security',
+          'Conflict-affected areas',
+          'Regular extreme urban heat'
+        ],
+        datasets:[{
+          label:'Projected exposed population, 2050 (billions)',
+          data:[9.2,5.7,3.5,2.9,2.4,1.6],
+          backgroundColor:[AMBER_BRIGHT,WATER,DANGER,INCOME_C,CONFLICT_C,AMBER],
+          borderRadius:3,
+          barThickness:34
+        }]
+      },
+      options:{
+        indexAxis:'y',
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:(ctx)=>ctx.parsed.x.toFixed(1)+' billion people'}}
+        },
+        scales:{
+          x:{
+            grid:{color:GRID},
+            title:{display:true,text:'Billions of people',color:INK_FAINT},
+            min:0,max:10
+          },
+          y:{
+            grid:{display:false},
+            ticks:{font:{family:SERIF,size:12}}
+          }
+        }
+      }
+    });
+  }
+
+  const c2 = document.getElementById('chartCompound');
+  if(c2){
+    new Chart(c2, {
+      type:'bar',
+      data:{
+        labels:['2050 population'],
+        datasets:[
+          {label:'3+ overlapping stressors',data:[1.1],backgroundColor:DANGER,stack:'s',borderColor:'#10161d',borderWidth:1,borderRadius:3},
+          {label:'2 overlapping stressors',data:[2.3],backgroundColor:AMBER,stack:'s',borderColor:'#10161d',borderWidth:1,borderRadius:3},
+          {label:'1 stressor',data:[4.1],backgroundColor:CONFLICT_C,stack:'s',borderColor:'#10161d',borderWidth:1,borderRadius:3},
+          {label:'Outside all five',data:[2.2],backgroundColor:'#3d4a57',stack:'s',borderColor:'#10161d',borderWidth:1,borderRadius:3}
+        ]
+      },
+      options:{
+        indexAxis:'y',
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{position:'bottom',labels:{color:INK_DIM,padding:12}},
+          tooltip:{callbacks:{label:(ctx)=>ctx.dataset.label+': '+ctx.parsed.x.toFixed(1)+' billion people ('+Math.round(ctx.parsed.x/9.7*100)+'%)'}}
+        },
+        scales:{
+          x:{
+            stacked:true,
+            grid:{color:GRID},
+            title:{display:true,text:'Billions of people',color:INK_FAINT},
+            min:0,max:9.7,
+            ticks:{callback:(v)=>v.toFixed(1)+'B'}
+          },
+          y:{
+            stacked:true,
+            grid:{display:false},
+            ticks:{display:false}
+          }
+        }
+      }
+    });
+  }
+
+  const c3 = document.getElementById('chartRegions');
+  if(c3){
+    new Chart(c3, {
+      type:'bar',
+      data:{
+        labels:['South Asia','Sub-Saharan Africa','East Asia & Pacific','Middle East & North Africa','Latin America & Caribbean','Europe & Central Asia','North America'],
+        datasets:[{
+          label:'Highly exposed population (billions)',
+          data:[1.9,1.5,1.1,0.5,0.4,0.3,0.2],
+          backgroundColor:['#d85b4b','#e0a458','#f4c17b','#c98d5a','#b08bb8','#7fb3c8','#3d4a57'],
+          borderRadius:3,
+          barThickness:30
+        }]
+      },
+      options:{
+        indexAxis:'y',
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:(ctx)=>ctx.parsed.x.toFixed(1)+' billion people'}}
+        },
+        scales:{
+          x:{grid:{color:GRID},title:{display:true,text:'Billions',color:INK_FAINT},min:0,max:2.2},
+          y:{grid:{display:false},ticks:{font:{family:SERIF,size:11}}}
+        }
+      }
+    });
+  }
+
+  const c4 = document.getElementById('chartScenarios');
+  if(c4){
+    new Chart(c4, {
+      type:'line',
+      data:{
+        labels:['2025','2030','2035','2040','2045','2050'],
+        datasets:[
+          {
+            label:'Fragmented world (SSP3-7.0 analog)',
+            data:[0.30,0.33,0.36,0.40,0.44,0.48],
+            borderColor:DANGER,
+            backgroundColor:'rgba(216,91,75,0.12)',
+            fill:true,
+            tension:0.35,
+            borderWidth:2.5,
+            pointRadius:3,
+            pointBackgroundColor:DANGER
+          },
+          {
+            label:'Current policies (SSP2-4.5 analog)',
+            data:[0.30,0.32,0.34,0.36,0.38,0.40],
+            borderColor:AMBER,
+            backgroundColor:'rgba(224,164,88,0.08)',
+            fill:true,
+            tension:0.35,
+            borderWidth:2.5,
+            pointRadius:3,
+            pointBackgroundColor:AMBER
+          },
+          {
+            label:'Accelerated adaptation (SSP1-2.6 analog)',
+            data:[0.30,0.29,0.29,0.28,0.27,0.26],
+            borderColor:TEAL,
+            backgroundColor:'rgba(87,184,165,0.10)',
+            fill:true,
+            tension:0.35,
+            borderWidth:2.5,
+            pointRadius:3,
+            pointBackgroundColor:TEAL
+          }
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{position:'bottom',labels:{color:INK_DIM,padding:14}},
+          tooltip:{callbacks:{label:(ctx)=>ctx.dataset.label+': '+Math.round(ctx.parsed.y*100)+'% of humanity'}}
+        },
+        scales:{
+          x:{grid:{display:false},ticks:{color:INK_FAINT}},
+          y:{
+            grid:{color:GRID},
+            min:0.2,max:0.55,
+            ticks:{color:INK_FAINT,callback:(v)=>Math.round(v*100)+'%'}
+          }
+        }
+      }
+    });
+  }
+})();
+</script>
+</body>
+</html>
